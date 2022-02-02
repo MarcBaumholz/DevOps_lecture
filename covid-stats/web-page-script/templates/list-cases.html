@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title>Malta COVID Tracker</title>
+    </head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        table {
+            width: 100%;
+        }
+    </style>
+    <body>
+        <h1>Malta COVID Tracker</h1>
+        <div>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Confirmed</th>
+
+                    <th>Recovered</th>
+                    <th>Deaths</th>
+                </tr>
+
+                {% for row in rows %}
+                <tr>
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[3]}}</td>
+                    <td>{{row[4]}}</td>
+                </tr>
+                {% endfor %}
+                </table>
+        </div>
+    </body>
+</html>
