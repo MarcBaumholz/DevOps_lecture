@@ -1,0 +1,147 @@
+Git
+Connect
+=> ssh -l marc ip addr
+
+Install Gitlab
+
+	sudo apt update
+	
+	sudo apt upgrade
+	
+	curl -s https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
+	
+	sudo apt install gitlab-ce
+	
+	sudo gitlab-ctl reconfigure
+	
+	192.168.64.73/users/sign_in
+	Own Ip addr
+
+	Change external ip addr
+
+	sudo cat /etc/gitlab/initital_root_password
+		=> copy password
+		
+	Change pw in settings
+		=> add users, repos, assign permissions
+
+
+Docker
+	Install docker
+	
+	sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+	
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+	
+	sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+	
+	sudo apt-get update
+	
+	sudo apt-get install docker-ce docker-ce-cli containerd.io
+	
+	sudo groupadd docker
+	
+	sudo usermod -aG docker $JENKINS 
+	
+	sudo docker run hello-world
+
+
+Push on Google Cloud
+
+	echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list 
+	
+	
+	curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - 
+	
+	sudo apt-get update && sudo apt-get install google-cloud-sdk
+	
+	
+	gcloud auth configure-docker  
+	y
+	
+	sudo docker build -t eu.gcr.io/devops-project-337415/website .
+	sudo docker build -t eu.gcr.io/devops-project-337415/downloadscript .
+	
+	gcloud auth login 
+	
+	You are now logged in as [marcbaumholz@t-online.de].
+	Your current project is [None].  You can change this setting by running:
+	  $ gcloud config set project PROJECT_ID
+	
+	gcloud config set project devops-project-337415
+	
+	sudo docker push eu.gcr.io/devops-project-337415/website
+	
+	docker push eu.gcr.io/devops-project-337415/downloadscript
+	
+	
+	
+	Run the docker container
+		Create a network
+			docker network create covid-net
+		
+	Run the container in network
+		Docker run -d --network covid-net --name  mariadb -v myvol:/app --env MARIADB_DATABASE=covidstats --env MARIADB_PASSWORD=mypass --env MARIADB_ROOT_PASSWORD=mypass mariadb:latest
+		
+	Run second container
+		docker run -d --rm --name webpage --network covid-stats -p 8888:5000 eu.gcr.io/devops-project-337415/webpage
+		docker run -d --rm --name downloadscript --network covid-stats eu.gcr.io/devops-project-337415/downloadscript
+		
+Jenkins
+
+	Freestyle Project in Jenkins
+	
+	sudo apt update
+	
+	sudo apt install openjdk-11-jre
+	
+	java -version
+	
+	curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+	
+	echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+	
+	sudo apt-get update
+	
+	sudo apt-get install jenkins
+	
+	sudo nano /etc/default/jenkins
+		=> change host to 8090
+	
+	sudo service jenkins restart
+	
+	sudo service jenkins status
+	
+		Add jenkins steps
+			Connect with git, docker and google cloud
+			Clone => pull => build => run => push
+
+Kubernetes
+
+Run on minikube
+	Install minikube 
+	
+	Minikube start
+	
+	minikube kubectl -- apply -f deployment-config.yaml
+	
+	minikube kubectl -- apply -f service-config.yaml
+	
+	Minikube kubectl get all
+	
+	Minikube ip
+	
+
+Run on google cloud cluster
+
+	gcloud container clusters get-credentials cluster-website --zone us-central1-c --project devops-project-337415
+	
+	kubectl -- apply -f deployment-config.yaml 
+	
+	sed -i -e 's/NodePort/LoadBalancer/g' service-config.yaml
+	
+	Kubectl create -f service-config.yaml
+
+
+
+
